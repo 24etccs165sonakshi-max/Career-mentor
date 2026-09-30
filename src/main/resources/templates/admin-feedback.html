@@ -1,0 +1,290 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mentor Feedback & Ratings - AimHigh</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+      .feedback-admin-container {
+        max-width: 850px;
+        margin: 1.2rem auto 2.5rem auto;
+        padding: 0 1rem;
+        text-align: left;
+      }
+
+      .page-header {
+        margin-bottom: 1.2rem;
+      }
+
+      .page-header h2 {
+        color: var(--primary-color);
+        font-size: 1.4rem;
+        margin-bottom: 2px;
+        font-weight: 800;
+      }
+
+      .page-header p {
+        color: var(--text-muted);
+        font-size: 0.82rem;
+        margin: 0;
+      }
+
+      .mentor-feedback-card {
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        padding: 1rem 1.2rem;
+        margin-bottom: 1rem;
+      }
+
+      .mentor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 0.6rem;
+      }
+
+      .mentor-details h3 {
+        color: var(--primary-color);
+        margin: 0 0 3px 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+
+      .mentor-details p {
+        margin: 2px 0;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+      }
+
+      .rating-summary {
+        text-align: right;
+        background: var(--bg-light);
+        padding: 6px 12px;
+        border-radius: 6px;
+        min-width: 120px;
+      }
+
+      .stars {
+        color: #f59e0b;
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+        line-height: 1.1;
+      }
+
+      .average-rating {
+        color: var(--primary-color);
+        font-size: 1rem;
+        font-weight: 800;
+        line-height: 1.2;
+      }
+
+      .rating-count {
+        color: var(--text-muted);
+        font-size: 0.7rem;
+        margin-top: 1px;
+      }
+
+      .feedback-list {
+        margin-top: 0.6rem;
+      }
+
+      .feedback-item {
+        background: var(--bg-light);
+        border-radius: 6px;
+        padding: 0.6rem 0.8rem;
+        margin-top: 6px;
+        border-left: 3px solid var(--primary-color);
+      }
+
+      .feedback-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3px;
+      }
+
+      .student-name {
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 0.82rem;
+      }
+
+      .feedback-stars {
+        color: #f59e0b;
+        font-size: 0.85rem;
+      }
+
+      .feedback-comment {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        line-height: 1.35;
+        margin: 0;
+      }
+
+      .no-feedback {
+        text-align: center;
+        padding: 8px;
+        background: var(--bg-light);
+        border-radius: 6px;
+        color: var(--text-muted);
+        font-size: 0.78rem;
+      }
+
+      .back-button {
+        display: inline-block;
+        margin-bottom: 0.8rem;
+        padding: 5px 12px;
+        font-size: 0.78rem;
+        border-radius: 6px;
+        text-decoration: none;
+      }
+
+      @media (max-width: 600px) {
+        .mentor-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .rating-summary {
+          text-align: left;
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ===============================
+         AIMHIGH HEADER
+    =============================== -->
+    <header>
+      <div class="logo-container">
+        <svg
+          viewBox="0 0 100 100"
+          width="44"
+          height="44"
+          class="site-logo"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="50" cy="45" r="38" stroke="#0090D0" stroke-width="6" />
+          <circle cx="63" cy="34" r="8" fill="#00E5FF" />
+          <path d="M53 52C53 45 57 43 63 43C69 43 73 45 73 52" fill="#00E5FF" />
+          <circle cx="50" cy="38" r="8" fill="#00BFFF" />
+          <path d="M40 56C40 49 44 47 50 47C56 47 60 49 60 56" fill="#00BFFF" />
+          <circle cx="37" cy="42" r="8" fill="#0077B6" />
+          <path d="M27 60C27 53 31 51 37 51C43 51 47 53 47 60" fill="#0077B6" />
+          <path
+            d="M30 64L48 50L58 57L75 35"
+            stroke="#FF8500"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <polygon points="77,32 68,34 74,42" fill="#FF8500" />
+        </svg>
+
+        <h1>AimHigh</h1>
+      </div>
+
+      <nav>
+        <a th:href="@{/admin/dashboard}">Dashboard</a>
+        <a th:href="@{/admin/feedback}">Feedback</a>
+        <a th:href="@{/logout}">Logout</a>
+      </nav>
+    </header>
+
+    <!-- ===============================
+         MAIN CONTENT
+    =============================== -->
+    <main class="feedback-admin-container">
+      <a th:href="@{/admin/dashboard}" class="btn-primary back-button">
+        ← Back to Dashboard
+      </a>
+
+      <div class="page-header">
+        <h2>Mentor Feedback &amp; Ratings</h2>
+        <p>View student feedback and ratings for all mentors.</p>
+      </div>
+
+      <div th:each="mentor : ${mentors}" class="mentor-feedback-card">
+        <div class="mentor-header">
+          <div class="mentor-details">
+            <h3 th:text="${mentor.name}">Mentor Name</h3>
+            <p>
+              <strong>Expertise:</strong>
+              <span th:text="${mentor.expertise}">Data Science</span>
+            </p>
+            <p>
+              <strong>Email:</strong>
+              <span th:text="${mentor.email}">mentor@email.com</span>
+            </p>
+          </div>
+
+          <div class="rating-summary" th:with="summary=${ratingMap[mentor.id]}">
+            <div th:if="${summary != null}">
+              <div class="stars">
+                <span
+                  th:each="i : ${#numbers.sequence(1,5)}"
+                  th:text="${i <= T(java.lang.Math).round(summary.average) ? '★' : '☆'}"
+                  >★</span
+                >
+              </div>
+              <div class="average-rating">
+                <span th:text="${#numbers.formatDecimal(summary.average, 1, 1)}"
+                  >4.5</span
+                >
+                / 5
+              </div>
+              <div class="rating-count">
+                <span th:text="${summary.count}">1</span> rating(s)
+              </div>
+            </div>
+
+            <div th:if="${summary == null}">
+              <div class="stars">☆☆☆☆☆</div>
+              <div class="average-rating" style="font-size: 0.85rem">
+                No Rating
+              </div>
+              <div class="rating-count">No feedback</div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="feedback-list"
+          th:with="feedbackList=${feedbackMap[mentor.id]}"
+        >
+          <div class="feedback-item" th:each="feedback : ${feedbackList}">
+            <div class="feedback-top">
+              <span class="student-name">Student</span>
+              <span class="feedback-stars">
+                <span
+                  th:each="i : ${#numbers.sequence(1,5)}"
+                  th:text="${i <= feedback.rating ? '★' : '☆'}"
+                  >★</span
+                >
+              </span>
+            </div>
+            <p
+              class="feedback-comment"
+              th:text="${feedback.comment != null and !feedback.comment.isEmpty() ? feedback.comment : 'No comment provided.'}"
+            >
+              Feedback
+            </p>
+          </div>
+
+          <div
+            class="no-feedback"
+            th:if="${feedbackList == null or feedbackList.isEmpty()}"
+          >
+            No feedback has been submitted for this mentor yet.
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

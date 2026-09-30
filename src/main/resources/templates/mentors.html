@@ -1,0 +1,191 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recommended Mentors - AimHigh</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+      .mentors-container {
+        max-width: 1050px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .mentors-header {
+        margin-bottom: 2rem;
+        text-align: left;
+      }
+
+      .mentors-header h2 {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin-bottom: 0.3rem;
+        font-weight: 800;
+      }
+
+      .mentors-header p {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin: 0;
+      }
+
+      .mentor-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      .mentor-card {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--accent-color);
+        box-shadow: var(--shadow);
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .mentor-card h3 {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0.6rem;
+      }
+
+      .mentor-card p {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin: 4px 0;
+      }
+
+      .mentor-card strong {
+        color: var(--primary-color);
+      }
+
+      .badge-expertise {
+        display: inline-block;
+        background: var(--bg-light);
+        color: var(--secondary-color);
+        border: 1px solid var(--accent-color);
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin: 0.8rem 0 1.2rem 0;
+        width: fit-content;
+      }
+
+      .btn-assign {
+        background-color: var(--primary-color);
+        color: var(--white);
+        border: none;
+        padding: 0.65rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        width: 100%;
+        transition: 0.2s ease;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+      }
+
+      .btn-assign:hover {
+        background-color: var(--primary-hover);
+        color: var(--white);
+      }
+
+      @media (max-width: 900px) {
+        .mentor-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 600px) {
+        .mentor-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="logo-container">
+        <svg
+          viewBox="0 0 100 100"
+          width="44"
+          height="44"
+          class="site-logo"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="50" cy="45" r="38" stroke="#1F6F5F" stroke-width="6" />
+          <circle cx="63" cy="34" r="8" fill="#6FCF97" />
+          <path d="M53 52C53 45 57 43 63 43C69 43 73 45 73 52" fill="#6FCF97" />
+          <circle cx="50" cy="38" r="8" fill="#2FA084" />
+          <path d="M40 56C40 49 44 47 50 47C56 47 60 49 60 56" fill="#2FA084" />
+          <circle cx="37" cy="42" r="8" fill="#1F6F5F" />
+          <path d="M27 60C27 53 31 51 37 51C43 51 47 53 47 60" fill="#1F6F5F" />
+          <path
+            d="M30 64L48 50L58 57L75 35"
+            stroke="#2FA084"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <polygon points="77,32 68,34 74,42" fill="#2FA084" />
+        </svg>
+        <h1>AimHigh</h1>
+      </div>
+
+      <nav>
+        <a th:href="@{/student-dashboard}">Dashboard</a>
+        <a th:href="@{/student/mentors}">Mentors</a>
+        <a th:href="@{/logout}">Logout</a>
+      </nav>
+    </header>
+
+    <main class="mentors-container">
+      <div class="mentors-header">
+        <h2>Top Recommended Mentors</h2>
+        <p>
+          Based on your selected career interests, here are the best mentors for
+          you.
+        </p>
+      </div>
+
+      <div class="mentor-grid">
+        <div class="mentor-card" th:each="mentor : ${mentors}">
+          <div>
+            <h3 th:text="${mentor.name}">Mentor Name</h3>
+            <p>
+              <strong>Email:</strong>
+              <span th:text="${mentor.email}">mentor@email.com</span>
+            </p>
+            <p>
+              <strong>Experience:</strong>
+              <span th:text="${mentor.experience}">5</span> + years
+            </p>
+            <span class="badge-expertise" th:text="${mentor.expertise}"
+              >Domain</span
+            >
+          </div>
+
+          <form th:action="@{/choose-mentor}" method="post">
+            <input type="hidden" name="mentorId" th:value="${mentor.id}" />
+            <button type="submit" class="btn-assign">
+              Connect &amp; Assign
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,355 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Student Login - AimHigh</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+      .password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .password-wrapper input {
+        width: 100%;
+        padding-right: 42px;
+      }
+
+      .toggle-password-btn {
+        position: absolute;
+        right: 12px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted, #607b83);
+      }
+
+      .toggle-password-btn svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .field-error {
+        color: #dc2626;
+        font-size: 0.8rem;
+        margin-top: 4px;
+        display: block;
+        text-align: left;
+      }
+
+      .field-error:empty {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="logo-container">
+        <svg
+          viewBox="0 0 100 100"
+          width="44"
+          height="44"
+          class="site-logo"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="50" cy="45" r="38" stroke="#0090D0" stroke-width="6" />
+
+          <circle cx="63" cy="34" r="8" fill="#00E5FF" />
+
+          <path d="M53 52C53 45 57 43 63 43C69 43 73 45 73 52" fill="#00E5FF" />
+
+          <circle cx="50" cy="38" r="8" fill="#00BFFF" />
+
+          <path d="M40 56C40 49 44 47 50 47C56 47 60 49 60 56" fill="#00BFFF" />
+
+          <circle cx="37" cy="42" r="8" fill="#0077B6" />
+
+          <path d="M27 60C27 53 31 51 37 51C43 51 47 53 47 60" fill="#0077B6" />
+
+          <path
+            d="M30 64L48 50L58 57L75 35"
+            stroke="#FF8500"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+
+          <polygon points="77,32 68,34 74,42" fill="#FF8500" />
+        </svg>
+
+        <h1>AimHigh</h1>
+      </div>
+
+      <nav>
+        <a href="/">Home</a>
+
+        <a href="/login">Student Login</a>
+
+        <a href="/register">Register</a>
+
+        <a href="/admin/login">Admin Login</a>
+      </nav>
+    </header>
+
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <h2>Welcome Back!</h2>
+
+        <p>Login to continue your journey</p>
+
+        <!-- SUCCESS MESSAGE -->
+
+        <div th:if="${param.success}" class="success">
+          Password updated successfully!
+        </div>
+
+        <!-- BACKEND LOGIN ERROR -->
+
+        <div th:if="${param.error}" class="error">
+          Invalid email or password!
+        </div>
+
+        <!-- LOGIN FORM -->
+
+        <form action="/login" method="post" onsubmit="return Validation();">
+          <!-- EMAIL -->
+
+          <div class="form-group">
+            <label>Email Address</label>
+
+            <input
+              type="text"
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              oninput="validateEmail()"
+            />
+
+            <span id="emailerror" class="field-error"></span>
+          </div>
+
+          <!-- PASSWORD -->
+
+          <div class="form-group">
+            <label>Password</label>
+
+            <div class="password-wrapper">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                oninput="validatePassword()"
+              />
+
+              <button
+                type="button"
+                class="toggle-password-btn"
+                id="togglePassword"
+                aria-label="Toggle password visibility"
+              >
+                <!-- Eye Open Icon -->
+                <svg id="eyeOpenIcon" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <!-- Eye Closed Icon -->
+                <svg
+                  id="eyeClosedIcon"
+                  viewBox="0 0 24 24"
+                  style="display: none"
+                >
+                  <path
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                  ></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+
+            <span id="passworderror" class="field-error"></span>
+          </div>
+
+          <!-- LOGIN BUTTON -->
+
+          <button type="submit" class="btn-primary btn-block">Login</button>
+        </form>
+
+        <!-- FORGOT PASSWORD -->
+
+        <div class="auth-footer">
+          <a href="/forgot-password"> Forgot Password? </a>
+        </div>
+
+        <!-- REGISTER -->
+
+        <div class="auth-footer">
+          Don't have an account?
+
+          <a href="/register"> Register </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- JAVASCRIPT VALIDATION -->
+    <!-- ========================= -->
+
+    <script>
+      // =========================
+      // PASSWORD EYE TOGGLE
+      // =========================
+
+      const passwordInput = document.getElementById("password");
+      const toggleBtn = document.getElementById("togglePassword");
+      const eyeOpen = document.getElementById("eyeOpenIcon");
+      const eyeClosed = document.getElementById("eyeClosedIcon");
+
+      toggleBtn.addEventListener("click", () => {
+        const isPassword = passwordInput.getAttribute("type") === "password";
+        passwordInput.setAttribute("type", isPassword ? "text" : "password");
+        eyeOpen.style.display = isPassword ? "none" : "block";
+        eyeClosed.style.display = isPassword ? "block" : "none";
+      });
+
+      // =========================
+      // EMAIL VALIDATION
+      // =========================
+
+      function validateEmail() {
+        let email = document.getElementById("email").value.trim();
+
+        let error = document.getElementById("emailerror");
+
+        // Empty
+
+        if (email === "") {
+          error.innerHTML = "Enter Email";
+
+          return false;
+        }
+
+        // Spaces
+
+        if (/\s/.test(email)) {
+          error.innerHTML = "Spaces are not allowed in email";
+
+          return false;
+        }
+
+        // Invalid characters
+
+        if (/[^A-Za-z0-9@._%+-]/.test(email)) {
+          error.innerHTML = "Invalid character in email";
+
+          return false;
+        }
+
+        // More than one @
+
+        if ((email.match(/@/g) || []).length > 1) {
+          error.innerHTML = "Email can contain only one @";
+
+          return false;
+        }
+
+        // Email format
+
+        let pattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+        if (!pattern.test(email)) {
+          error.innerHTML = "Enter a valid email";
+
+          return false;
+        }
+
+        // Valid
+
+        error.innerHTML = "";
+
+        return true;
+      }
+
+      // =========================
+      // PASSWORD VALIDATION
+      // =========================
+
+      function validatePassword() {
+        let password = document.getElementById("password").value;
+
+        let error = document.getElementById("passworderror");
+
+        // Empty
+
+        if (password === "") {
+          error.innerHTML = "Password is required";
+
+          return false;
+        }
+
+        if (!/[0-9]/.test(password)) {
+          error.innerHTML = "Password must contain a number";
+
+          return false;
+        }
+
+        if (!/[A-Z]/.test(password)) {
+          error.innerHTML = "Password must contain an uppercase letter";
+
+          return false;
+        }
+
+        if (!/[a-z]/.test(password)) {
+          error.innerHTML = "Password must contain a lowercase letter";
+
+          return false;
+        }
+
+        if (!/[@$!%*?&]/.test(password)) {
+          error.innerHTML = "Password must contain a special character";
+
+          return false;
+        }
+
+        if (password.length < 8) {
+          error.innerHTML = "Password must contain at least 8 characters";
+
+          return false;
+        }
+
+        // Valid
+
+        error.innerHTML = "";
+
+        return true;
+      }
+
+      function Validation() {
+        if (!validateEmail()) {
+          return false;
+        }
+
+        if (!validatePassword()) {
+          return false;
+        }
+
+        return true;
+      }
+    </script>
+  </body>
+</html>

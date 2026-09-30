@@ -1,0 +1,441 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Admin Dashboard - AimHigh</title>
+
+    <!-- Thymeleaf CSS path -->
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+    <style>
+      /* ===============================
+         ADMIN CONTAINER
+      =============================== */
+
+      .admin-container {
+        max-width: 1100px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        width: 100%;
+      }
+
+      .admin-header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .admin-header-actions h2 {
+        font-size: 1.8rem;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+        font-weight: 800;
+      }
+
+      .admin-header-actions p {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin: 0;
+      }
+
+      /* ===============================
+         MENTOR GRID
+      =============================== */
+
+      .mentor-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      .mentor-card {
+        background: var(--card-bg, #ffffff);
+        padding: 1.4rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow);
+      }
+
+      .mentor-card h3 {
+        color: var(--primary-color);
+        margin-bottom: 8px;
+        font-size: 1.15rem;
+        font-weight: 700;
+      }
+
+      .mentor-card p {
+        color: var(--text-muted);
+        margin: 7px 0;
+        font-size: 0.88rem;
+      }
+
+      .mentor-card strong {
+        color: var(--text-dark);
+      }
+
+      .badge-expertise {
+        display: inline-block;
+        background: var(--bg-light);
+        color: var(--primary-color);
+        border: 1px solid var(--light-teal);
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .mentor-card-actions {
+        margin-top: 1rem;
+      }
+
+      /* ===============================
+         DELETE BUTTON
+      =============================== */
+
+      .btn-delete {
+        background: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fca5a5;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .btn-delete:hover {
+        background: #dc2626;
+        color: white;
+      }
+
+      /* ===============================
+         STUDENT PROGRESS
+      =============================== */
+
+      .student-progress-section {
+        margin-top: 3.5rem;
+      }
+
+      .progress-header {
+        margin-bottom: 1.5rem;
+      }
+
+      .progress-header h2 {
+        font-size: 1.5rem;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+        font-weight: 700;
+      }
+
+      .progress-header p {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin: 0;
+      }
+
+      .student-progress-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .student-progress-card {
+        background: var(--card-bg, #ffffff);
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow);
+        transition: 0.2s ease;
+      }
+
+      .student-progress-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(9, 99, 126, 0.18);
+      }
+
+      .student-progress-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .student-progress-top h3 {
+        color: var(--primary-color);
+        font-size: 1.1rem;
+        margin-bottom: 4px;
+        font-weight: 700;
+      }
+
+      .student-progress-top p {
+        color: var(--text-muted);
+        font-size: 0.82rem;
+        margin: 0;
+      }
+
+      .student-progress-top > strong {
+        color: var(--secondary-color);
+        font-size: 1.15rem;
+      }
+
+      /* ===============================
+         PROGRESS BAR
+      =============================== */
+
+      .progress-bar {
+        width: 100%;
+        height: 12px;
+        background-color: var(--bg-light);
+        border: 1px solid var(--light-teal);
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 20px;
+        transition: width 0.5s ease;
+      }
+
+      .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .progress-info strong {
+        color: var(--text-dark);
+      }
+
+      /* ===============================
+         EMPTY BOX
+      =============================== */
+
+      .empty-box {
+        text-align: center;
+        padding: 40px;
+        background: var(--card-bg, #ffffff);
+        border-radius: var(--radius);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow);
+        margin-top: 20px;
+      }
+
+      .empty-box h3 {
+        color: var(--primary-color);
+        margin-bottom: 8px;
+      }
+
+      .empty-box p {
+        color: var(--text-muted);
+      }
+
+      @media (max-width: 900px) {
+        .mentor-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .student-progress-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .mentor-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .admin-header-actions {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ===============================
+         AIMHIGH HEADER
+    =============================== -->
+    <header>
+      <div class="logo-container">
+        <svg
+          viewBox="0 0 100 100"
+          width="44"
+          height="44"
+          class="site-logo"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="50" cy="45" r="38" stroke="#0090D0" stroke-width="6" />
+          <circle cx="63" cy="34" r="8" fill="#00E5FF" />
+          <path d="M53 52C53 45 57 43 63 43C69 43 73 45 73 52" fill="#00E5FF" />
+          <circle cx="50" cy="38" r="8" fill="#00BFFF" />
+          <path d="M40 56C40 49 44 47 50 47C56 47 60 49 60 56" fill="#00BFFF" />
+          <circle cx="37" cy="42" r="8" fill="#0077B6" />
+          <path d="M27 60C27 53 31 51 37 51C43 51 47 53 47 60" fill="#0077B6" />
+          <path
+            d="M30 64L48 50L58 57L75 35"
+            stroke="#FF8500"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <polygon points="77,32 68,34 74,42" fill="#FF8500" />
+        </svg>
+
+        <h1>AimHigh</h1>
+      </div>
+
+      <nav>
+        <a th:href="@{/admin/dashboard}">Dashboard</a>
+        <a th:href="@{/admin/feedback}">Feedback</a>
+        <a th:href="@{/logout}">Logout</a>
+      </nav>
+    </header>
+
+    <main class="admin-container">
+      <div class="admin-header-actions">
+        <div>
+          <h2>Admin Dashboard</h2>
+          <p>Manage mentors and monitor student progress</p>
+        </div>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+          <a th:href="@{/admin/add-mentor}" class="btn-primary">
+            + Add Mentor
+          </a>
+          <a th:href="@{/admin/feedback}" class="btn-primary">
+            ⭐ View Feedback & Ratings
+          </a>
+        </div>
+      </div>
+
+      <!-- ===============================
+           MANAGE MENTORS SECTION
+      =============================== -->
+      <section>
+        <div class="progress-header">
+          <h2>Manage Mentors</h2>
+          <p>Add and manage mentors in the portal</p>
+        </div>
+
+        <div class="mentor-grid" th:if="${not #lists.isEmpty(mentors)}">
+          <div class="mentor-card" th:each="mentor : ${mentors}">
+            <h3 th:text="${mentor.name}">Mentor Name</h3>
+
+            <span class="badge-expertise" th:text="${mentor.expertise}">
+              Expertise
+            </span>
+
+            <p>
+              <strong>Email:</strong>
+              <span th:text="${mentor.email}"> mentor@email.com </span>
+            </p>
+
+            <p>
+              <strong>Experience:</strong>
+              <span th:text="${mentor.experience}"> 5 </span>
+              Years
+            </p>
+
+            <div class="mentor-card-actions">
+              <form
+                th:action="@{/admin/mentors/delete/{id}(id=${mentor.id})}"
+                method="post"
+              >
+                <button
+                  type="submit"
+                  class="btn-delete"
+                  onclick="
+                    return confirm(
+                      'Are you sure you want to delete this mentor?',
+                    );
+                  "
+                >
+                  Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-box" th:if="${#lists.isEmpty(mentors)}">
+          <h3>No Mentors Found</h3>
+          <p>No mentors have been added yet.</p>
+          <br />
+          <a th:href="@{/admin/add-mentor}" class="btn-primary">
+            + Add First Mentor
+          </a>
+        </div>
+      </section>
+
+      <!-- ===============================
+           STUDENT PROGRESS SECTION
+      =============================== -->
+      <section class="student-progress-section">
+        <div class="progress-header">
+          <h2>Student Progress</h2>
+          <p>Track student assignment progress</p>
+        </div>
+
+        <div
+          class="student-progress-grid"
+          th:if="${not #lists.isEmpty(studentProgressList)}"
+        >
+          <div
+            class="student-progress-card"
+            th:each="item : ${studentProgressList}"
+          >
+            <div class="student-progress-top">
+              <div>
+                <h3 th:text="${item.student.name}">Student Name</h3>
+                <p th:text="${item.student.email}">student@email.com</p>
+              </div>
+
+              <strong th:text="${item.progress + '%'}"> 0% </strong>
+            </div>
+
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                th:style="'width:' + ${item.progress} + '%;'"
+              ></div>
+            </div>
+
+            <!-- PROGRESS DETAILS -->
+            <div class="progress-info">
+              <span>
+                Completed:
+                <strong th:text="${item.completedAssignments}"> 0 </strong>
+              </span>
+
+              <span>
+                Total:
+                <strong th:text="${item.totalAssignments}"> 0 </strong>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- NO STUDENTS -->
+        <div class="empty-box" th:if="${#lists.isEmpty(studentProgressList)}">
+          <h3>No Students Found</h3>
+          <p>No students have registered yet.</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

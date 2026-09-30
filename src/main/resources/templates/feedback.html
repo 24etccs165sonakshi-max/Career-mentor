@@ -1,0 +1,305 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Give Feedback - AimHigh</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+    <style>
+      .feedback-container {
+        max-width: 580px;
+        margin: 2.5rem auto 4rem auto;
+        padding: 0 1.5rem;
+        text-align: left;
+      }
+
+      .feedback-card {
+        background: #ffffff;
+        padding: 2rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow);
+      }
+
+      .feedback-card h2 {
+        color: var(--text-dark);
+        margin-bottom: 0.4rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+      }
+
+      .feedback-card > p {
+        color: var(--text-muted);
+        font-size: 0.88rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .mentor-info {
+        background: var(--bg-light);
+        padding: 1rem 1.2rem;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+        margin-bottom: 1.5rem;
+      }
+
+      .mentor-info h3 {
+        color: var(--primary-color);
+        margin: 0 0 4px 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .mentor-info span {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      .mentor-info strong {
+        color: var(--text-dark);
+      }
+
+      .rating-section {
+        margin-bottom: 1.5rem;
+      }
+
+      .rating-section > label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+      }
+
+      /* STAR RATING */
+      .stars {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .stars input {
+        display: none;
+      }
+
+      .stars label {
+        font-size: 2rem;
+        color: #cbd5e1;
+        cursor: pointer;
+        transition: 0.2s ease;
+        margin: 0;
+        line-height: 1;
+      }
+
+      .stars label:hover,
+      .stars label:hover ~ label,
+      .stars input:checked ~ label {
+        color: #f59e0b;
+      }
+
+      /* FEEDBACK TEXTAREA */
+      .feedback-textarea {
+        width: 100%;
+        min-height: 110px;
+        resize: vertical;
+        padding: 10px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.88rem;
+        box-sizing: border-box;
+        outline: none;
+        transition: 0.2s ease;
+      }
+
+      .feedback-textarea:focus {
+        border-color: var(--primary-color);
+      }
+
+      /* BUTTON */
+      .btn-feedback {
+        width: 100%;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 8px;
+        background: var(--primary-color);
+        color: #ffffff;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: 0.2s ease;
+      }
+
+      .btn-feedback:hover {
+        background: var(--primary-hover);
+      }
+
+      /* ERROR / SUCCESS */
+      .error-message {
+        background: #fee2e2;
+        color: #b91c1c;
+        padding: 10px 12px;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .success-message {
+        background: #d1fae5;
+        color: #047857;
+        padding: 10px 12px;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      /* BACK LINK */
+      .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 1.2rem;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 600px) {
+        .feedback-container {
+          margin-top: 1.5rem;
+        }
+
+        .feedback-card {
+          padding: 1.4rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ===============================
+         AIMHIGH HEADER
+    =============================== -->
+    <header>
+      <div class="logo-container">
+        <svg
+          viewBox="0 0 100 100"
+          width="44"
+          height="44"
+          class="site-logo"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="50" cy="45" r="38" stroke="#0090D0" stroke-width="6" />
+          <circle cx="63" cy="34" r="8" fill="#00E5FF" />
+          <path d="M53 52C53 45 57 43 63 43C69 43 73 45 73 52" fill="#00E5FF" />
+          <circle cx="50" cy="38" r="8" fill="#00BFFF" />
+          <path d="M40 56C40 49 44 47 50 47C56 47 60 49 60 56" fill="#00BFFF" />
+          <circle cx="37" cy="42" r="8" fill="#0077B6" />
+          <path d="M27 60C27 53 31 51 37 51C43 51 47 53 47 60" fill="#0077B6" />
+          <path
+            d="M30 64L48 50L58 57L75 35"
+            stroke="#FF8500"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <polygon points="77,32 68,34 74,42" fill="#FF8500" />
+        </svg>
+
+        <h1>AimHigh</h1>
+      </div>
+
+      <nav>
+        <a th:href="@{/student-dashboard}">Dashboard</a>
+        <a th:href="@{/interests}">Update Interests</a>
+        <a th:href="@{/student/mentors}">Explore Mentors</a>
+        <a th:href="@{/logout}">Logout</a>
+      </nav>
+    </header>
+
+    <!-- ===============================
+         MAIN CONTENT
+    =============================== -->
+    <main class="feedback-container">
+      <div class="feedback-card">
+        <h2>Rate Your Mentor</h2>
+        <p>
+          Share your experience and help us improve the mentoring experience.
+        </p>
+
+        <!-- ERROR MESSAGE -->
+        <div th:if="${error}" class="error-message" th:text="${error}">
+          Error message
+        </div>
+
+        <!-- MENTOR INFORMATION -->
+        <div class="mentor-info" th:if="${mentor != null}">
+          <h3 th:text="${mentor.name}">Mentor Name</h3>
+          <span>
+            Expertise:
+            <strong th:text="${mentor.expertise}">Data Science</strong>
+          </span>
+        </div>
+
+        <!-- FEEDBACK FORM -->
+        <form th:action="@{/student/feedback}" method="post">
+          <input
+            type="hidden"
+            name="mentorId"
+            th:value="${mentor != null ? mentor.id : ''}"
+          />
+
+          <!-- STAR RATING -->
+          <div class="rating-section">
+            <label>Your Rating</label>
+            <div class="stars">
+              <input type="radio" id="star5" name="rating" value="5" required />
+              <label for="star5" title="5 stars">★</label>
+
+              <input type="radio" id="star4" name="rating" value="4" />
+              <label for="star4" title="4 stars">★</label>
+
+              <input type="radio" id="star3" name="rating" value="3" />
+              <label for="star3" title="3 stars">★</label>
+
+              <input type="radio" id="star2" name="rating" value="2" />
+              <label for="star2" title="2 stars">★</label>
+
+              <input type="radio" id="star1" name="rating" value="1" />
+              <label for="star1" title="1 star">★</label>
+            </div>
+          </div>
+
+          <!-- COMMENT -->
+          <div class="rating-section">
+            <label for="comment">Your Feedback / Review</label>
+            <textarea
+              id="comment"
+              name="comment"
+              class="feedback-textarea"
+              placeholder="Write your feedback about the mentor..."
+              maxlength="500"
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn-feedback">Submit Feedback</button>
+        </form>
+
+        <a th:href="@{/student-dashboard}" class="back-link">
+          ← Back to Dashboard
+        </a>
+      </div>
+    </main>
+  </body>
+</html>
